@@ -1,7 +1,7 @@
 import time
 
 from fastapi import APIRouter
-from app.schemas import RagGenerateRequest, PredictPriorityRequest, RagGenerateResponse, NoRagGenerateResponse
+from app.schemas import RagGenerateRequest, QueryRequest, RagGenerateResponse, NoRagGenerateResponse
 
 router = APIRouter(prefix="/generate", tags=["Debug"])
 
@@ -15,7 +15,7 @@ async def generate_rag(request: RagGenerateRequest):
 
 
 @router.post("/no-rag", response_model=NoRagGenerateResponse)
-async def generate_no_rag(request: PredictPriorityRequest):
+async def generate_no_rag(request: QueryRequest):
     t0 = time.time()
     # TODO: build prompt from request.text, call Groq, calculate cost
     latency_ms = (time.time() - t0) * 1000

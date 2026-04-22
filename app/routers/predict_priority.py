@@ -9,7 +9,7 @@ from app.prompts.predict_priority import PREDICT_PRIORITY_PROMPT
 from app.schemas import (
     LLMPredictPriorityResponse,
     MLPredictPriorityResponse,
-    PredictPriorityRequest,
+    QueryRequest,
 )
 
 router = APIRouter(prefix="/predict_priority", tags=["Debug"])
@@ -20,12 +20,12 @@ def build_predict_priority_user_prompt(query: str) -> str:
 
 
 @router.post("/ml", response_model=MLPredictPriorityResponse)
-async def predict_priority_ml(request: PredictPriorityRequest):
+async def predict_priority_ml(request: QueryRequest):
     raise NotImplementedError
 
 
 @router.post("/llm", response_model=LLMPredictPriorityResponse)
-async def predict_priority_llm(request: PredictPriorityRequest):
+async def predict_priority_llm(request: QueryRequest):
     t0 = time.time()
     llm_response_str = llm.call(
         build_predict_priority_user_prompt(request.text),
