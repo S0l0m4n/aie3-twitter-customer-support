@@ -1,3 +1,5 @@
+.python-version
+__pycache__
 *.env
 data/notes.md
 data/SESSION_PROMPT.md

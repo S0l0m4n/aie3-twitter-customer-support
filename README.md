@@ -27,6 +27,11 @@ uv sync
 source .venv/bin/activate
 ```
 
+To run the FastAPI server:
+```
+uv run uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
 To end the session, run `deactivate` or just kill the terminal.
 
 Project structure
