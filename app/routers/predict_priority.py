@@ -30,7 +30,7 @@ async def predict_priority_llm(request: QueryRequest):
     llm_response_str = llm.call(
         build_predict_priority_user_prompt(request.text),
         PREDICT_PRIORITY_PROMPT,
-        PredictPriorityResponse,
+        response_model=PredictPriorityResponse,
     )
     latency_ms = (time.time() - t0) * 1000
 

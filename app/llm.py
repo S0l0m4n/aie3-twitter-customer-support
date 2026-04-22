@@ -23,26 +23,29 @@ def _get_groq_client():
 
 def call(user_prompt: str,
          system_prompt: str,
-         response_model: type[BaseModel]) -> BaseModel:
-    """Call LLM with user prompt and system prompt."""
+         response_model: type[BaseModel] | None = None) -> str:
+    """Call LLM with user prompt and system prompt. If response_model is provided, uses json_schema structured output."""
     client = _get_groq_client()
 
     logger.info("=== LLM PROMPT ===\nSYSTEM:\n%s\nUSER:\n%s", system_prompt, user_prompt)
 
-    response = client.chat.completions.create(
+    kwargs = dict(
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
         ],
         model=GROQ_MODEL,
         temperature=TEMPERATURE,
-        response_format={
+    )
+    if response_model is not None:
+        kwargs["response_format"] = {
             "type": "json_schema",
             "json_schema": {
                 "name": response_model.__name__,
                 "schema": response_model.model_json_schema(),
             },
-        },
-    )
+        }
+
+    response = client.chat.completions.create(**kwargs)
 
     return response.choices[0].message.content
