@@ -19,6 +19,66 @@ Flow
 4. Predict the priority of the (support) query two ways, by the trained ML model and a zero-shot LLM prompt
 5. Show four-way comparison
 
+Setup
+-----
+Install Python virtual environment:
+```
+uv sync
+source .venv/bin/activate
+```
+
+To end the session, run `deactivate` or just kill the terminal.
+
+Project structure
+-----------------
+```
+[PROJECT_ROOT]
+├── README.md
+├── .gitignore
+├── .env.example
+├── docker-compose.yml
+├── Dockerfile                       ← backend Dockerfile (at root)
+├── requirements.txt
+├── main.py                          ← FastAPI app entry point
+├── features.py                      ← shared feature extraction
+├── notebook.ipynb
+│
+├── app/
+│   ├── routers/
+│   │   ├── query.py                 ← POST /query (orchestrator)
+│   │   ├── retrieve.py              ← POST /retrieve
+│   │   ├── generate.py              ← POST /generate/rag, /generate/no-rag
+│   │   ├── predict.py               ← POST /predict/ml, /predict/llm
+│   │   └── health.py                ← GET /health
+│   ├── services/
+│   │   ├── retrieval.py             ← ChromaDB query logic
+│   │   ├── llm.py                   ← Groq API calls
+│   │   ├── ml_model.py              ← Load model.pkl, run predict
+│   │   └── features.py              ← copied from root features.py
+│   ├── schemas/
+│   │   └── models.py                ← Pydantic request/response schemas
+│   └── utils/
+│       └── logger.py                ← JSONL query logging
+│
+├── ml/
+│   └── model.pkl                    ← trained classifier
+│
+├── chroma_data/                     ← ChromaDB persistent dir (volume-mounted)
+│
+├── frontend/
+│   ├── Dockerfile
+│   ├── package.json
+│   └── src/
+│       ├── App.jsx
+│       └── components/
+│           ├── QueryInput.jsx
+│           ├── AnswerPanel.jsx
+│           ├── SourcePanel.jsx
+│           └── ComparisonTable.jsx
+│
+└── logs/
+```
+
 Data
 ----
 The full dataset, twcs.csv ("Twitter Customer Support"), can be downloaded from Kaggle [here](https://www.kaggle.com/datasets/thoughtvector/customer-support-on-twitter).

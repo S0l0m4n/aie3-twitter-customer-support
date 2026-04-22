@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 ### Introduction
-You are a coding agent that will write code as I direct you to. There is a CONTEXT.md file that sets the scene, generated from a previous chat that I had with Claude. Read that first before continuing.
+You are a coding agent that will write code as I direct you to. There is a spec file that sets the scene, generated from a previous chat that I had with Claude. Read that first before continuing.
 
 All code you suggest will be made in this Git repo. Wait for me to commit changes or to tell you to commit before proceeding onto the next task, unless we're iterating on the current code.
 
@@ -17,7 +17,7 @@ Never end a code file, e.g. `*.py`, with an empty line.
 
 ### Project-Specific Rules
 
-**Architecture spec is the source of truth.** The CONTEXT.md file contains the full architecture spec. If something is defined there — API response shape, feature list, prompt wording, logging format — follow it exactly. Don't improvise alternatives unless I ask you to.
+**Architecture spec is the source of truth.** The ARCHITECTURE_SPEC.md file contains the full architecture spec. If something is defined there — API response shape, feature list, prompt wording, logging format — follow it exactly. Don't improvise alternatives unless I ask you to.
 
 **Shared code: `features.py`.** The feature extraction function must be identical between the notebook and `backend/services/features.py`. If you change one, change the other. Never let them drift.
 
