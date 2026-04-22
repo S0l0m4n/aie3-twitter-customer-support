@@ -53,13 +53,13 @@ class RagGenerateResponse(BaseModel):
     response: str
     sources: list[Source]
     latency_ms: float
-    cost_usd: float
+    cost_usd: float = 0.0
 
 
 class NoRagGenerateResponse(BaseModel):
     response: str
     latency_ms: float
-    cost_usd: float
+    cost_usd: float = 0.0
 
 
 class ErrorResponse(BaseModel):
