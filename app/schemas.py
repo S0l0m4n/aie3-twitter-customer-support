@@ -7,24 +7,14 @@ class QueryRequest(BaseModel):
     top_k: int = Field(default=3)
 
 
-class MLPredictPriorityResponse(BaseModel):
-    label: str
-    accuracy: float = Field(
-        default=-1,
-        description="Pre-computed accuracy of the response (-1 if missing)"
-    )
-    latency_ms: float
-    cost_usd: float = 0.0
-
-
-class LLMPredictPriorityResponse(BaseModel):
+class PredictPriorityResponse(BaseModel):
     label: Literal["normal", "urgent"]
     accuracy: float = Field(
         default=-1,
         description="Pre-computed accuracy of the response (-1 if missing)"
     )
     latency_ms: float
-    cost_usd: float
+    cost_usd: float = 0.0
 
 
 class Source(BaseModel):
@@ -50,8 +40,8 @@ class QueryResponse(BaseModel):
     sources: list[Source]
     rag_answer: LLMResult
     no_rag_answer: LLMResult
-    ml_prediction: MLPredictPriorityResponse
-    llm_prediction: LLMPredictPriorityResponse
+    ml_prediction: PredictPriorityResponse
+    llm_prediction: PredictPriorityResponse
 
 
 class RetrieveResponse(BaseModel):
