@@ -1,24 +1,46 @@
+import json
 import time
 
 from fastapi import APIRouter
-from app.schemas import PredictPriorityRequest, MLPredictPriorityResponse, LLMPredictPriorityResponse
+
+import app.llm as llm
 from app.features import extract_features
+from app.prompts.predict_priority import PREDICT_PRIORITY_PROMPT
+from app.schemas import (
+    LLMPredictPriorityResponse,
+    MLPredictPriorityResponse,
+    PredictPriorityRequest,
+)
 
 router = APIRouter(prefix="/predict_priority", tags=["Debug"])
 
 
+def build_predict_priority_user_prompt(query: str) -> str:
+    return f"Classify this prompt:\n{query}"
+
+
 @router.post("/ml", response_model=MLPredictPriorityResponse)
 async def predict_priority_ml(request: PredictPriorityRequest):
-    t0 = time.time()
-    # TODO: load model.pkl (once at startup), call extract_features, then predict_proba
-    features = extract_features(request.text)
-    latency_ms = (time.time() - t0) * 1000
-    return MLPredictPriorityResponse(label="normal", confidence=0.0, latency_ms=latency_ms)
+    raise NotImplementedError
 
 
 @router.post("/llm", response_model=LLMPredictPriorityResponse)
 async def predict_priority_llm(request: PredictPriorityRequest):
     t0 = time.time()
-    # TODO: call Groq with json_schema strict mode, parse label + confidence
+    llm_response_str = llm.call(
+        build_predict_priority_user_prompt(request.text),
+        PREDICT_PRIORITY_PROMPT,
+        LLMPredictPriorityResponse,
+    )
     latency_ms = (time.time() - t0) * 1000
-    return LLMPredictPriorityResponse(label="normal", confidence=0.0, latency_ms=latency_ms, cost_usd=0.0)
+
+    # Parse the LLM response (assumes it returns at least {"label": "..."})
+    llm_data = json.loads(llm_response_str)
+
+    # Construct the full response, setting defaults/additional fields
+    response = LLMPredictPriorityResponse(
+        label=llm_data["label"],
+        latency_ms=latency_ms,
+        cost_usd=0.0,  # Fixed cost for now
+    )
+    return response

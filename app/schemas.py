@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from typing import Literal
 
 
 class QueryRequest(BaseModel):
@@ -8,6 +9,26 @@ class QueryRequest(BaseModel):
 
 class PredictPriorityRequest(BaseModel):
     text: str = Field(..., min_length=1, max_length=1000)
+
+
+class MLPredictPriorityResponse(BaseModel):
+    label: str
+    accuracy: float = Field(
+        default=-1,
+        description="Pre-computed accuracy of the response (-1 if missing)"
+    )
+    latency_ms: float
+    cost_usd: float = 0.0
+
+
+class LLMPredictPriorityResponse(BaseModel):
+    label: Literal["normal", "urgent"]
+    accuracy: float = Field(
+        default=-1,
+        description="Pre-computed accuracy of the response (-1 if missing)"
+    )
+    latency_ms: float
+    cost_usd: float
 
 
 class Source(BaseModel):
@@ -24,20 +45,6 @@ class RagGenerateRequest(BaseModel):
 
 class LLMResult(BaseModel):
     response: str
-    latency_ms: float
-    cost_usd: float
-
-
-class MLPredictPriorityResponse(BaseModel):
-    label: str
-    confidence: float
-    latency_ms: float
-    cost_usd: float = 0.0
-
-
-class LLMPredictPriorityResponse(BaseModel):
-    label: str
-    confidence: float
     latency_ms: float
     cost_usd: float
 
