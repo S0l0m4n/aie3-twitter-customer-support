@@ -30,7 +30,3 @@ def build_rag_user_prompt(query: str, sources: list[Source]) -> str:
     context += f"\"{query}\"\n\n"
     context += "Draft a response to this complaint."
     return context
-
-
-def build_no_rag_user_prompt(query: str) -> str:
-    return f"\"{query}\"\n\nDraft a response to this complaint."

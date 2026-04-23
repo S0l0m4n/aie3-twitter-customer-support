@@ -232,13 +232,6 @@ You are a customer support assistant. You help support agents draft responses to
 Draft a helpful, professional response to the following complaint. Keep your response concise — 2-3 sentences max.
 ```
 
-**User prompt (constructed at runtime):**
-
-```python
-def build_no_rag_user_prompt(query):
-    return f"\"{query}\"\n\nDraft a response to this complaint."
-```
-
 ### 4.3 Zero-shot Priority Prediction
 
 **System prompt (static):**

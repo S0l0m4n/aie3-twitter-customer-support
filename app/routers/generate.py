@@ -7,7 +7,6 @@ import app.retrieval as retrieval
 from app.prompts.generate import (
     GENERATE_NO_RAG_PROMPT,
     GENERATE_RAG_PROMPT,
-    build_no_rag_user_prompt,
     build_rag_user_prompt,
 )
 from app.schemas import LLMResult, QueryRequest, RagGenerateResponse
@@ -28,6 +27,6 @@ async def generate_rag(request: QueryRequest):
 @router.post("/no-rag", response_model=LLMResult)
 async def generate_no_rag(request: QueryRequest):
     t0 = time.time()
-    response = llm.call(build_no_rag_user_prompt(request.text), GENERATE_NO_RAG_PROMPT)
+    response = llm.call(request.text, GENERATE_NO_RAG_PROMPT)
     latency_ms = (time.time() - t0) * 1000
     return LLMResult(response=response, latency_ms=latency_ms, cost_usd=0.0)
