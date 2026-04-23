@@ -3,7 +3,7 @@ import time
 from fastapi import APIRouter
 
 import app.llm as llm
-import app.retrieval as retrieval
+from app.rag.retrieve import retrieve
 from app.prompts.generate import (
     GENERATE_NO_RAG_PROMPT,
     GENERATE_RAG_PROMPT,
@@ -17,7 +17,7 @@ router = APIRouter(prefix="/generate", tags=["Debug"])
 @router.post("/rag", response_model=RagGenerateResponse)
 async def generate_rag(request: QueryRequest):
     t0 = time.time()
-    sources = retrieval.retrieve(request.text, request.top_k)
+    sources = retrieve(request.text, request.top_k)
     user_prompt = build_rag_user_prompt(request.text, sources)
     response = llm.call(user_prompt, GENERATE_RAG_PROMPT)
     latency_ms = (time.time() - t0) * 1000
