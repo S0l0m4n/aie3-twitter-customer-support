@@ -33,7 +33,7 @@ Do not run any script without expicit permission first. In particular, do not ru
 
 **Docker.** Two services only: `backend` and `frontend`. No third container for ChromaDB. Named volumes for `chroma_data` and `logs`.
 
-**No overengineering.** No abstract base classes, no factory patterns, no dependency injection. Flat imports, simple functions, obvious code. I will be asked to explain every line in review.
+**No overengineering.** No abstract base classes, no factory patterns, no dependency injection. Simple functions, obvious code. I will be asked to explain every line in review.
 
 ### Code Style
 - Python: type hints on function signatures, but don't overdo it on local variables.
