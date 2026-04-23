@@ -170,7 +170,7 @@ For testing individual services in isolation. The frontend does not use them. Al
 
 | Endpoint | Returns | Accepts `top_k` |
 |---|---|---|
-| `POST /retrieve` | `{ sources, latency_ms }` | Yes |
+| `POST /retrieve` | `{ sources }` | Yes |
 | `POST /generate/rag` | `{ response, sources, latency_ms, cost_usd }` | Yes |
 | `POST /generate/no-rag` | `{ response, latency_ms, cost_usd }` | No |
 | `POST /predict/ml` | `{ label, confidence, latency_ms, cost_usd }` | No |

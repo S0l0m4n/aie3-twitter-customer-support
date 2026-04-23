@@ -41,7 +41,6 @@ class QueryResponse(BaseModel):
 
 class RetrieveResponse(BaseModel):
     sources: list[Source]
-    latency_ms: float
 
 
 class RagGenerateResponse(BaseModel):
