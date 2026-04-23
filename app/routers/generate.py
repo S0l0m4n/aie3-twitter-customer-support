@@ -17,11 +17,16 @@ router = APIRouter(prefix="/generate", tags=["Debug"])
 @router.post("/rag", response_model=RagGenerateResponse)
 async def generate_rag(request: QueryRequest):
     t0 = time.time()
-    sources = retrieve(request.text, request.top_k)
-    user_prompt = build_rag_user_prompt(request.text, sources)
+    retrieve_result = retrieve(request.text, request.top_k)
+    user_prompt = build_rag_user_prompt(request.text, retrieve_result.sources)
     response = llm.call(user_prompt, GENERATE_RAG_PROMPT)
     latency_ms = (time.time() - t0) * 1000
-    return RagGenerateResponse(response=response, sources=sources, latency_ms=latency_ms, cost_usd=0.0)
+    return RagGenerateResponse(
+        response=response,
+        latency_ms=latency_ms,
+        cost_usd=0.0,
+        retrieve=retrieve_result,
+    )
 
 
 @router.post("/no-rag", response_model=LLMResult)

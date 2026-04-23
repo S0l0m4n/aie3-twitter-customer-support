@@ -26,6 +26,7 @@ class Source(BaseModel):
 
 class RetrieveResponse(BaseModel):
     sources: list[Source]
+    embedding_backend: Literal["openai", "st"]
 
 
 class LLMResult(BaseModel):
@@ -34,9 +35,8 @@ class LLMResult(BaseModel):
     cost_usd: float
 
 
-# Inherit from LLMResult...
 class RagGenerateResponse(LLMResult):
-    sources: list[Source]
+    retrieve: RetrieveResponse
 
 
 class QueryResponse(BaseModel):

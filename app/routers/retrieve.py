@@ -7,5 +7,4 @@ router = APIRouter(tags=["Debug"])
 
 @router.post("/retrieve", response_model=RetrieveResponse)
 async def retrieve_sources(request: QueryRequest):
-    sources = retrieve(request.text, request.top_k)
-    return RetrieveResponse(sources=sources)
+    return retrieve(request.text, request.top_k)

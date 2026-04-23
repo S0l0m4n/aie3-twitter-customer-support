@@ -13,7 +13,7 @@ from app.config import (
     OPENAI_EMBEDDING_MODEL,
     ST_EMBEDDING_MODEL,
 )
-from app.schemas import Source
+from app.schemas import RetrieveResponse, Source
 
 COLLECTION_NAME = "complaints"
 
@@ -34,7 +34,7 @@ def _get_collection():
     return client.get_collection(name=COLLECTION_NAME, embedding_function=embedding_fn)
 
 
-def retrieve(text: str, top_k: int) -> list[Source]:
+def retrieve(text: str, top_k: int) -> RetrieveResponse:
     collection = _get_collection()
     results = collection.query(query_texts=[text], n_results=top_k)
 
@@ -51,4 +51,4 @@ def retrieve(text: str, top_k: int) -> list[Source]:
             similarity=similarity,
         ))
 
-    return sources
+    return RetrieveResponse(sources=sources, embedding_backend=EMBEDDING_BACKEND)
