@@ -70,6 +70,10 @@ collection = client.get_or_create_collection(
         name=COLLECTION_NAME, embedding_function=embedding_fn)
 
 total = len(df)
+if collection.count() == total:
+    print(f"Collection already contains {total:,} documents, skipping.")
+    exit(0)
+
 for start in range(0, total, BATCH_SIZE):
     batch = df.iloc[start : start + BATCH_SIZE]
     collection.upsert(

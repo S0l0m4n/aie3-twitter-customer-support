@@ -6,12 +6,18 @@ Columns: ticket_id, complaint_text, brand_reply, created_at
 Should be run from the project root directory.
 """
 
+import os
+
 import pandas as pd
 
 INPUT = "data/twcs.csv"
 OUTPUT = "data/first-brand-reply-pairs.csv"
 SAMPLE_SIZE = 25_000
 RANDOM_STATE = 42
+
+if os.path.exists(OUTPUT):
+    print(f"{OUTPUT} already exists, skipping.")
+    exit(0)
 
 df = pd.read_csv(INPUT)
 print(f"Loaded {len(df):,} rows")
