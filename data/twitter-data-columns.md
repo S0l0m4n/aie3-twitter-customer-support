@@ -12,4 +12,4 @@
                 email.response_tweet_id
 **response_tweet_id**           IDs of tweets that are responses to this tweet,
                                 comma-separated, e.g. "119310,119312"
-**in_response_to_tweet_id**     IDs of the tweet is in response to, if any, e.g. 119313
+**in_response_to_tweet_id**     IDs of the tweet this is in response to, if any, e.g. 119313
