@@ -13,7 +13,7 @@
 | **Frontend** | React | Single-page app, no routing, no state management library. `useState` + one `fetch` call. |
 | **Orchestration** | Docker Compose | Two services: `backend` and `frontend`. Named volume for ChromaDB data and logs. |
 | **Vector store** | ChromaDB in-process | Runs as a Python library inside the backend container. Data persisted to a directory on disk via a Docker named volume. No separate service, no network calls. |
-| **Embedding model** | `sentence-transformers/all-MiniLM-L6-v2` | Runs locally inside the backend container. No API calls, no cost, no rate limits. Produces 384-dimensional vectors. Used both at indexing time (notebook) and query time (backend). |
+| **Embedding model** | Hosted embeddings model | Use OpenAI or Gemini embeddings model, e.g. `text-embedding-004` by Gemini. Free generous tier, needs 768 dimensions. |
 
 ---
 
@@ -96,7 +96,7 @@ NEGATIVE_KEYWORDS = {"worst", "terrible", "horrible", "awful", "unacceptable",
 
 ### 2.8 Embedding Pipeline
 
-- Use `sentence-transformers/all-MiniLM-L6-v2` to embed all 20–30k complaint texts
+- Use Gemini `text-embedding-004` or similar to embed all 20–30k complaint texts
 - Store in ChromaDB with persistent directory
 - The ChromaDB data directory is later mounted into the backend Docker container via a named volume
 
