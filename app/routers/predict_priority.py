@@ -21,11 +21,21 @@ def build_predict_priority_user_prompt(query: str) -> str:
 
 @router.post("/ml", response_model=PredictPriorityResponse)
 async def predict_priority_ml(request: QueryRequest):
+    """Predict ticket priority using the ML model.
+
+    Extracts hand-crafted features from the query text and runs them through
+    the trained `model.pkl` classifier to predict `normal` or `urgent`.
+    """
     raise NotImplementedError
 
 
 @router.post("/llm", response_model=PredictPriorityResponse)
 async def predict_priority_llm(request: QueryRequest):
+    """Predict ticket priority using the LLM.
+
+    Asks the LLM to classify the query as `normal` or `urgent` using a
+    structured JSON response. Useful as a baseline against the ML model.
+    """
     t0 = time.time()
     llm_response_str = llm.call(
         build_predict_priority_user_prompt(request.text),

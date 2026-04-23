@@ -1,8 +1,15 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Literal
 
 
 class QueryRequest(BaseModel):
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "text": "My order hasn't arrived and it's been two weeks. This is completely unacceptable!",
+            "top_k": 3,
+        }
+    })
+
     text: str = Field(..., min_length=1, max_length=1000)
     top_k: int = Field(default=3)
 
