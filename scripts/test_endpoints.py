@@ -1,15 +1,20 @@
 """
 End-to-end smoke tests for /retrieve and /generate/rag.
-Starts the server, runs several complaint scenarios, prints results.
+Assumes the server is already running. Start it with:
+    uvicorn main:app --port 8000
 """
 
 import json
-import subprocess
+import os
+import sys
 import time
 
 import requests
+from dotenv import load_dotenv
 
-BASE = "http://localhost:8001"
+load_dotenv()
+
+BASE = "http://localhost:8000"
 
 TEST_COMPLAINTS = [
     "I was charged twice this month and nobody is responding to my emails",
@@ -40,16 +45,16 @@ def run_tests():
         retrieve_wall = (time.time() - t0) * 1000
         sources = retrieve_resp["sources"]
 
-        print(f"\n--- /retrieve ({retrieve_wall:.0f} ms total) ---")
+        print(f"\n--- /retrieve ({retrieve_wall:.0f} ms) ---")
         for s in sources:
             print(f"  [{s['similarity']:.3f}] ticket {s['ticket_id']}: {s['customer_text'][:80]}")
 
         # Step 2: generate/rag
         t0 = time.time()
-        rag_resp = post("/generate/rag", {"text": complaint, "sources": sources})
+        rag_resp = post("/generate/rag", {"text": complaint})
         rag_wall = (time.time() - t0) * 1000
 
-        print(f"\n--- /generate/rag ({rag_resp['latency_ms']:.0f} ms LLM, {rag_wall:.0f} ms total) ---")
+        print(f"\n--- /generate/rag ({rag_wall:.0f} ms) ---")
         print(f"  {rag_resp['response']}")
 
         # Step 3: generate/no-rag
@@ -57,33 +62,29 @@ def run_tests():
         no_rag_resp = post("/generate/no-rag", {"text": complaint})
         no_rag_wall = (time.time() - t0) * 1000
 
-        print(f"\n--- /generate/no-rag ({no_rag_resp['latency_ms']:.0f} ms LLM, {no_rag_wall:.0f} ms total) ---")
+        print(f"\n--- /generate/no-rag ({no_rag_wall:.0f} ms) ---")
         print(f"  {no_rag_resp['response']}")
 
         results.append({
             "complaint": complaint,
             "sources": sources,
             "rag_response": rag_resp["response"],
-            "rag_latency_ms": rag_resp["latency_ms"],
+            "rag_latency_ms": rag_wall,
             "no_rag_response": no_rag_resp["response"],
-            "no_rag_latency_ms": no_rag_resp["latency_ms"],
+            "no_rag_latency_ms": no_rag_wall,
         })
 
     return results
 
 
 if __name__ == "__main__":
-    proc = subprocess.Popen(
-        [".venv/bin/uvicorn", "main:app", "--port", "8001"],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
-    time.sleep(4)
-
     try:
-        results = run_tests()
-        with open("scripts/test_results.json", "w") as f:
-            json.dump(results, f, indent=2)
-        print("\n\nResults saved to scripts/test_results.json")
-    finally:
-        proc.terminate()
+        requests.get(f"{BASE}/health", timeout=2)
+    except requests.exceptions.ConnectionError:
+        print(f"Server not running at {BASE}. Start it with:\n  uvicorn main:app --port 8000")
+        sys.exit(1)
+
+    results = run_tests()
+    with open("scripts/test_results.json", "w") as f:
+        json.dump(results, f, indent=2)
+    print("\n\nResults saved to scripts/test_results.json")
