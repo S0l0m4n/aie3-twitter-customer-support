@@ -1,6 +1,8 @@
 .python-version
 __pycache__
 *.env
+chroma_data*
+data/*.zip
 data/notes.md
 data/SESSION_PROMPT.md
 data/twcs.csv
