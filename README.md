@@ -91,14 +91,27 @@ The full dataset, twcs.csv ("Twitter Customer Support"), can be downloaded from 
 ### Filtering
 We filter the dataset by inbound tweets, which represent messages from users (not company responses). From these, we get the initial customer messages (initial query). We match each query with the initial company response. From the remaining dataset, we extract **20-30k query/response pairs**. These are stored as embeddings for the RAG response. We also create a data frame from just the query messages for training the ML model; classifying priority doesn't need the company response.
 
+Run `filter_dataset.py` from the project root directory to achieve this.
+
+Generated dataset = data/first-brand-reply-pairs.csv
+
+### Embedding
+We generate the ChromaDB database of embeddings from the above filtered dataset. Run `embed_dataset.py` to call the embeddings model with the data. The generated collection is called **complaints**.
+
+We can quickly do a sanity check to confirm the database. Start an interactive Python session and run:
+```
+import chromadb
+client = chromadb.PersistentClient("chroma_data")  # data is in the top-level chroma_data/ dir
+C = client.get_collection("complaints")
+C.count()       # number of records
+C.peek(3)       # inspect a few
+```
+
 ### Labelling function
 We need to classify the priority as **urgent** or **normal**. We can come up with a **weak-supervision** labelling function based on:
 * keywords (`refund`, `cancel` etc.)
 * punctuation (has 2+ exclamation marks)
 * ALL-CAPS ratio (e.g. above 30 %)
-
-### Chunking
-We'll chunk by tweet, as each tweet is short, along with the response tweet.
 
 Feature engineering
 -------------------

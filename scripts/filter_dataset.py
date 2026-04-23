@@ -2,6 +2,8 @@
 Filters twcs.csv down to ~25k first-complaint → first-brand-reply pairs.
 
 Columns: ticket_id, complaint_text, brand_reply, created_at
+
+Should be run from the project root directory.
 """
 
 import pandas as pd
