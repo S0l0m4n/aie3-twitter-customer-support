@@ -24,11 +24,6 @@ class Source(BaseModel):
     similarity: float
 
 
-class RagGenerateRequest(BaseModel):
-    text: str = Field(..., min_length=1, max_length=1000)
-    sources: list[Source]
-
-
 class LLMResult(BaseModel):
     response: str
     latency_ms: float
