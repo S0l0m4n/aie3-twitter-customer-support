@@ -40,7 +40,7 @@ def run_tests():
         retrieve_wall = (time.time() - t0) * 1000
         sources = retrieve_resp["sources"]
 
-        print(f"\n--- /retrieve ({retrieve_resp['latency_ms']:.0f} ms embed+query, {retrieve_wall:.0f} ms total) ---")
+        print(f"\n--- /retrieve ({retrieve_wall:.0f} ms total) ---")
         for s in sources:
             print(f"  [{s['similarity']:.3f}] ticket {s['ticket_id']}: {s['customer_text'][:80]}")
 
@@ -67,7 +67,6 @@ def run_tests():
             "rag_latency_ms": rag_resp["latency_ms"],
             "no_rag_response": no_rag_resp["response"],
             "no_rag_latency_ms": no_rag_resp["latency_ms"],
-            "retrieve_latency_ms": retrieve_resp["latency_ms"],
         })
 
     return results

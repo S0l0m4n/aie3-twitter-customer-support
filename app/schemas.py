@@ -24,10 +24,19 @@ class Source(BaseModel):
     similarity: float
 
 
+class RetrieveResponse(BaseModel):
+    sources: list[Source]
+
+
 class LLMResult(BaseModel):
     response: str
     latency_ms: float
     cost_usd: float
+
+
+# Inherit from LLMResult...
+class RagGenerateResponse(LLMResult):
+    sources: list[Source]
 
 
 class QueryResponse(BaseModel):
@@ -37,23 +46,6 @@ class QueryResponse(BaseModel):
     no_rag_answer: LLMResult
     ml_prediction: PredictPriorityResponse
     llm_prediction: PredictPriorityResponse
-
-
-class RetrieveResponse(BaseModel):
-    sources: list[Source]
-
-
-class RagGenerateResponse(BaseModel):
-    response: str
-    sources: list[Source]
-    latency_ms: float
-    cost_usd: float = 0.0
-
-
-class NoRagGenerateResponse(BaseModel):
-    response: str
-    latency_ms: float
-    cost_usd: float = 0.0
 
 
 class ErrorResponse(BaseModel):

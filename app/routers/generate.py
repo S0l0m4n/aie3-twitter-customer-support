@@ -10,7 +10,7 @@ from app.prompts.generate import (
     build_no_rag_user_prompt,
     build_rag_user_prompt,
 )
-from app.schemas import QueryRequest, RagGenerateResponse, NoRagGenerateResponse
+from app.schemas import LLMResult, QueryRequest, RagGenerateResponse
 
 router = APIRouter(prefix="/generate", tags=["Debug"])
 
@@ -25,9 +25,9 @@ async def generate_rag(request: QueryRequest):
     return RagGenerateResponse(response=response, sources=sources, latency_ms=latency_ms, cost_usd=0.0)
 
 
-@router.post("/no-rag", response_model=NoRagGenerateResponse)
+@router.post("/no-rag", response_model=LLMResult)
 async def generate_no_rag(request: QueryRequest):
     t0 = time.time()
     response = llm.call(build_no_rag_user_prompt(request.text), GENERATE_NO_RAG_PROMPT)
     latency_ms = (time.time() - t0) * 1000
-    return NoRagGenerateResponse(response=response, latency_ms=latency_ms, cost_usd=0.0)
+    return LLMResult(response=response, latency_ms=latency_ms, cost_usd=0.0)
