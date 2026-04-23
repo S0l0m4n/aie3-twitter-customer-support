@@ -15,9 +15,11 @@ Try to keep Git diffs minimal between commits. Only change something that is wor
 
 Never end a code file, e.g. `*.py`, with an empty line.
 
+Do not run any script without expicit permission first. In particular, do not run any script that you just coded; let me review it first outside of our chat.
+
 ### Project-Specific Rules
 
-**Architecture spec is the source of truth.** The ARCHITECTURE_SPEC.md file contains the full architecture spec. If something is defined there — API response shape, feature list, prompt wording, logging format — follow it exactly. Don't improvise alternatives unless I ask you to.
+**Architecture spec is the source of truth.** The ARCHITECTURE_SPEC.md file contains the full architecture spec. If something is defined there — API response shape, feature list, prompt wording, logging format — follow it exactly. Don't improvise alternatives unless I ask you to. You'll find the spec and other documents under the top-level `data` directory.
 
 **Shared code: `features.py`.** The feature extraction function must be identical between the notebook and `backend/services/features.py`. If you change one, change the other. Never let them drift.
 
