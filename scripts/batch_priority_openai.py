@@ -25,18 +25,16 @@ import csv
 import json
 import sys
 import os
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from openai import OpenAI
 from sklearn.metrics import accuracy_score, classification_report
 
-SYSTEM_PROMPT = """\
-You are a ticket triage system. You classify customer support complaints as either "urgent" or "normal".
-
-A ticket is urgent if it involves financial loss, account security, service outage, time pressure, or if the customer is expressing strong frustration or distress. Otherwise it is normal. When in doubt, lean urgent
-"""
+from app.config import OPENAI_MODEL
+from app.prompts.predict_priority import PREDICT_PRIORITY_PROMPT
 
 USER_PROMPT_TEMPLATE = "Classify this prompt:\n{query}"
-
-MODEL = "gpt-4o-mini"  # cheap, fast, good enough for classification
 
 
 def prepare(args):
@@ -54,9 +52,9 @@ def prepare(args):
                 "method": "POST",
                 "url": "/v1/chat/completions",
                 "body": {
-                    "model": MODEL,
+                    "model": OPENAI_MODEL,
                     "messages": [
-                        {"role": "system", "content": SYSTEM_PROMPT},
+                        {"role": "system", "content": PREDICT_PRIORITY_PROMPT},
                         {"role": "user", "content": USER_PROMPT_TEMPLATE.format(query=text)},
                     ],
                     "response_format": {

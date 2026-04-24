@@ -2,6 +2,7 @@
 __pycache__
 *.env
 chroma_data*
+data/*.jsonl
 data/*.zip
 data/notes.md
 data/SESSION_PROMPT.md
