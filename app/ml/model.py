@@ -34,7 +34,7 @@ def predict_with_proba(features: dict) -> tuple[str, float]:
             f"Feature mismatch between extract_features() and the trained model: {e}"
         ) from e
     idx = int(proba.argmax())
-    return str(classes[idx]), float(proba[idx])
+    return str(classes[idx]), round(float(proba[idx]), 2)
 
 
 def predict(features: dict) -> str:

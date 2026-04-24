@@ -35,11 +35,10 @@ async def predict_priority_ml(request: QueryRequest):
 
     t0 = time.time()
 
-    # Extract features from input query that the model needs to predict priority
     features = extract_features(request.text)
 
     try:
-        y = model.predict(features)
+        label, confidence = model.predict_with_proba(features)
     except RuntimeError as e:
         logger.error(str(e))
         raise HTTPException(status_code=500, detail=str(e))
@@ -47,9 +46,10 @@ async def predict_priority_ml(request: QueryRequest):
     latency_ms = (time.time() - t0) * 1000
 
     response = PredictPriorityResponse(
-        label=y,
+        label=label,
+        confidence=confidence,
         latency_ms=latency_ms,
-        cost_usd=0.0,  # ML model is free
+        cost_usd=0.0,
     )
     return response
 
@@ -72,10 +72,10 @@ async def predict_priority_llm(request: QueryRequest):
     # Parse the LLM response (assumes it returns at least {"label": "..."})
     llm_data = json.loads(llm_response_str)
 
-    # Construct the full response, setting defaults/additional fields
     response = PredictPriorityResponse(
         label=llm_data["label"],
+        confidence=llm_data.get("confidence", -1),
         latency_ms=latency_ms,
-        cost_usd=0.0,  # Fixed cost for now
+        cost_usd=0.0,
     )
     return response
