@@ -115,12 +115,22 @@ We need to classify the priority as **urgent** or **normal**. We can come up wit
 
 Feature engineering
 -------------------
-1. Word count
-2. Character count
-3. Exclamation mark count
-4. Question mark count
-5. ALL-CAPS word ratio
-6. Urgency keyword count
-7. Negative keyword count
-8. Sentiment compound score (VADER)
-9. Has @mention (boolean)
+Define keywords:
+```
+URGENCY_KEYWORDS = {"refund", "cancel", "broken", "charged", "stolen", "hacked",
+                    "urgent", "asap", "immediately", "emergency", "help"}
+
+NEGATIVE_KEYWORDS = {"worst", "terrible", "horrible", "awful", "unacceptable",
+                     "disgusting", "scam", "fraud", "pathetic"}
+```
+
+Our features:
+* Word count
+* Char count
+* Number of URGENCY keywords
+* Number of NEGATIVE keywords
+* Number of ALL-CAPS words
+* Number of exclamation marks
+* Number of question marks
+* Sentiment compound score (VADER)
+* Number of response tweets (second-last column)

@@ -16,27 +16,57 @@ _vader = SentimentIntensityAnalyzer()
 
 
 def _tokens(text: str) -> list[str]:
-    """Lowercase word tokens, punctuation stripped from edges."""
     return [re.sub(r"[^a-z0-9]", "", w.lower()) for w in text.split()]
 
 
-def extract_features(text: str) -> dict:
-    """Extract 9 features from a tweet. Must stay identical to the notebook version."""
-    words = text.split()
-    tokens = _tokens(text)
+def word_count(text: str) -> int:
+    return len(text.split())
 
-    # caps_ratio: fraction of words that are ALL-CAPS alphabetic (length > 1)
-    caps_words = sum(1 for w in words if w.isalpha() and len(w) > 1 and w == w.upper())
-    caps_ratio = caps_words / len(words) if words else 0.0
 
+def char_count(text: str) -> int:
+    return len(text)
+
+
+def urgency_keyword_count(text: str) -> int:
+    return sum(1 for t in _tokens(text) if t in URGENCY_KEYWORDS)
+
+
+def negative_keyword_count(text: str) -> int:
+    return sum(1 for t in _tokens(text) if t in NEGATIVE_KEYWORDS)
+
+
+def allcaps_count(text: str) -> int:
+    return sum(1 for w in text.split() if w.isalpha() and len(w) > 1 and w == w.upper())
+
+
+def exclamation_count(text: str) -> int:
+    return text.count("!")
+
+
+def question_mark_count(text: str) -> int:
+    return text.count("?")
+
+
+def sentiment_compound(text: str) -> float:
+    return _vader.polarity_scores(text)["compound"]
+
+
+def response_tweet_count(response_tweet_id: str) -> int:
+    if not response_tweet_id or str(response_tweet_id).strip() in ("", "nan"):
+        return 0
+    return len([x for x in str(response_tweet_id).split(",") if x.strip()])
+
+
+def extract_features(text: str, response_tweet_id: str = "") -> dict:
+    """Extract features from a tweet. Must stay identical to the notebook version."""
     return {
-        "word_count": len(words),
-        "char_count": len(text),
-        "exclamation_count": text.count("!"),
-        "question_mark_count": text.count("?"),
-        "caps_ratio": caps_ratio,
-        "urgency_keyword_count": sum(1 for t in tokens if t in URGENCY_KEYWORDS),
-        "negative_keyword_count": sum(1 for t in tokens if t in NEGATIVE_KEYWORDS),
-        "sentiment_compound": _vader.polarity_scores(text)["compound"],
-        "has_mention": int(bool(re.search(r"@\w+", text))),
+        "word_count": word_count(text),
+        "char_count": char_count(text),
+        "urgency_keyword_count": urgency_keyword_count(text),
+        "negative_keyword_count": negative_keyword_count(text),
+        "allcaps_count": allcaps_count(text),
+        "exclamation_count": exclamation_count(text),
+        "question_mark_count": question_mark_count(text),
+        "sentiment_compound": sentiment_compound(text),
+        "response_tweet_count": response_tweet_count(response_tweet_id),
     }
