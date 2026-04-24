@@ -152,3 +152,24 @@ weighted avg       0.98      0.98      0.98      6000
 ```
 
 These were evaluated on the test set `data/test_set.csv`, containing about 6k entries.
+
+I ran the zero-shot LLM over the same data, using the OpenAI batch data:
+```
+             precision    recall  f1-score   support
+
+      normal       0.95      0.61      0.74      5561
+      urgent       0.11      0.63      0.19       439
+
+    accuracy                           0.61      6000
+   macro avg       0.53      0.62      0.47      6000
+weighted avg       0.89      0.61      0.70      6000
+```
+We can see that it has only 61 % accuracy, which sounds shocking, but we must remember that the LLM is not assessing priority based on the labelling rule.
+
+Normal precision is good - the LLM is right when it predicts normal - but it's only recalling 61 % of normal results, so it's classify 39 % of these tickets as urgent, according to its own semantic rules. With the urgent precision at 11 %, the LLM considers many things urgent that were labelled normal.
+
+The LLM isn't failing at the task — it's using a different definition of urgency than the labels. The test set labels come from the keyword/punctuation rule (refund, cancel, broken, 2+ exclamation marks, etc.). The LLM prompt uses semantic reasoning (financial loss, strong frustration, and crucially — "when in doubt, lean urgent").
+
+So the LLM is finding semantically frustrated customers that don't contain any of the keywords, and flagging them as urgent. The rule-based labels say they're normal.
+
+The 0.61 accuracy measures LLM vs the keyword rule, not LLM vs ground truth. It's expected to diverge.
