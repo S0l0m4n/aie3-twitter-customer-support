@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, field_validator
 from typing import Literal
 
 
@@ -23,6 +23,11 @@ class PredictPriorityResponse(BaseModel):
     latency_ms: float
     cost_usd: float = 0.0
 
+    @field_validator("latency_ms")
+    @classmethod
+    def round_latency(cls, v: float) -> float:
+        return round(v, 3)
+
 
 class Source(BaseModel):
     ticket_id: str
@@ -40,6 +45,11 @@ class LLMResult(BaseModel):
     response: str
     latency_ms: float
     cost_usd: float
+
+    @field_validator("latency_ms")
+    @classmethod
+    def round_latency(cls, v: float) -> float:
+        return round(v, 3)
 
 
 class RagGenerateResponse(LLMResult):
