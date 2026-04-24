@@ -34,20 +34,30 @@ def _get_groq_client():
 def _get_openai_client():
     return OpenAI(api_key=OPENAI_API_KEY)
 
-def _call_openai(user_prompt: str, system_prompt: str) -> str:
+def _call_openai(user_prompt: str,
+                 system_prompt: str,
+                 response_model: type[BaseModel] | None = None) -> str:
     """Call OpenAI API."""
     client = _get_openai_client()
 
-    messages = []
-    if system_prompt:
-        messages.append({"role": "system", "content": system_prompt})
-    messages.append({"role": "user", "content": user_prompt})
-
-    response = client.chat.completions.create(
+    kwargs = dict(
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ],
         model=OPENAI_MODEL,
-        messages=messages,
         temperature=TEMPERATURE,
     )
+    if response_model is not None:
+        kwargs["response_format"] = {
+            "type": "json_schema",
+            "json_schema": {
+                "name": response_model.__name__,
+                "schema": response_model.model_json_schema(),
+            },
+        }
+
+    response = client.chat.completions.create(**kwargs)
 
     return response.choices[0].message.content
 
@@ -93,8 +103,7 @@ def call(user_prompt: str,
     for attempt in range(LLM_MAX_RETRIES):
         try:
             if LLM_PROVIDER == "openai":
-                # Response model not handled
-                return _call_openai(user_prompt, system_prompt)
+                return _call_openai(user_prompt, system_prompt, response_model)
             elif LLM_PROVIDER == "groq":
                 return _call_groq(user_prompt, system_prompt, response_model)
             else:
