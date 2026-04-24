@@ -51,22 +51,15 @@ def sentiment_compound(text: str) -> float:
     return _vader.polarity_scores(text)["compound"]
 
 
-def response_tweet_count(response_tweet_id: str) -> int:
-    if not response_tweet_id or str(response_tweet_id).strip() in ("", "nan"):
-        return 0
-    return len([x for x in str(response_tweet_id).split(",") if x.strip()])
-
-
-def extract_features(text: str, response_tweet_id: str = "") -> dict:
+def extract_features(text: str) -> dict:
     """Extract features from a tweet. Must stay identical to the notebook version."""
     return {
         "word_count": word_count(text),
-        "char_count": char_count(text),
+#       "char_count": char_count(text),     <-- not used by the model
         "urgency_keyword_count": urgency_keyword_count(text),
         "negative_keyword_count": negative_keyword_count(text),
         "allcaps_count": allcaps_count(text),
         "exclamation_count": exclamation_count(text),
         "question_mark_count": question_mark_count(text),
         "sentiment_compound": sentiment_compound(text),
-        "response_tweet_count": response_tweet_count(response_tweet_id),
     }

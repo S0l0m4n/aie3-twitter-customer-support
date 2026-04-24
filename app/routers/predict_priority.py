@@ -1,9 +1,11 @@
 import json
+import logging
 import time
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 import app.llm as llm
+from app.ml import model
 from app.ml.features import extract_features
 from app.prompts.predict_priority import PREDICT_PRIORITY_PROMPT
 from app.schemas import (
@@ -11,6 +13,8 @@ from app.schemas import (
     PredictPriorityResponse,
     QueryRequest,
 )
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/predict_priority", tags=["Debug"])
 
@@ -26,7 +30,28 @@ async def predict_priority_ml(request: QueryRequest):
     Extracts hand-crafted features from the query text and runs them through
     the trained `model.pkl` classifier to predict `normal` or `urgent`.
     """
-    raise NotImplementedError
+    if not model.is_loaded():
+        raise HTTPException(status_code=503, detail="Model not loaded.")
+
+    t0 = time.time()
+
+    # Extract features from input query that the model needs to predict priority
+    features = extract_features(request.text)
+
+    try:
+        y = model.predict(features)
+    except RuntimeError as e:
+        logger.error(str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+
+    latency_ms = (time.time() - t0) * 1000
+
+    response = PredictPriorityResponse(
+        label=y,
+        latency_ms=latency_ms,
+        cost_usd=0.0,  # ML model is free
+    )
+    return response
 
 
 @router.post("/llm", response_model=PredictPriorityResponse)
