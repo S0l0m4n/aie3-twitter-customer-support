@@ -16,9 +16,9 @@ class QueryRequest(BaseModel):
 
 class PredictPriorityResponse(BaseModel):
     label: Literal["normal", "urgent"]
-    accuracy: float = Field(
+    confidence: float = Field(
         default=-1,
-        description="Pre-computed accuracy of the response (-1 if missing)"
+        description="Confidence in the prediction (0.0 to 1.0, -1 if unavailable)"
     )
     latency_ms: float
     cost_usd: float = 0.0

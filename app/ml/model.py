@@ -22,6 +22,21 @@ def is_loaded() -> bool:
     return (_model is not None)
 
 
+def predict_with_proba(features: dict) -> tuple[str, float]:
+    if _model is None:
+        raise RuntimeError("Model is not loaded.")
+    df = pd.DataFrame([features])
+    try:
+        proba = _model.predict_proba(df)[0]
+        classes = _model.classes_
+    except ValueError as e:
+        raise RuntimeError(
+            f"Feature mismatch between extract_features() and the trained model: {e}"
+        ) from e
+    idx = int(proba.argmax())
+    return str(classes[idx]), float(proba[idx])
+
+
 def predict(features: dict) -> str:
     if _model is None:
         raise RuntimeError("Model is not loaded.")
