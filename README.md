@@ -134,3 +134,21 @@ Our features:
 * Number of question marks
 * Sentiment compound score (VADER)
 * Number of response tweets (second-last column)
+
+Priority prediction: ML vs LLM
+------------------------------
+I trained a Gradient Boosting Classifier model, it is saved as `priority_classifier.joblib` under `app/ml`.
+
+It has an accuracy of 98 %, along with the following stats:
+```
+              precision    recall  f1-score   support
+
+      normal       0.99      1.00      0.99      5561
+      urgent       0.98      0.81      0.89       439
+
+    accuracy                           0.98      6000
+   macro avg       0.98      0.90      0.94      6000
+weighted avg       0.98      0.98      0.98      6000
+```
+
+These were evaluated on the test set `data/test_set.csv`, containing about 6k entries.
