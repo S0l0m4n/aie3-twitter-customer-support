@@ -2,7 +2,7 @@ import time
 
 from fastapi import APIRouter
 from app.schemas import QueryRequest, QueryResponse, Source, LLMResult, PredictPriorityResponse
-from app.features import extract_features
+from app.ml.features import extract_features
 
 router = APIRouter(tags=["Query"])
 

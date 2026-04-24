@@ -4,7 +4,7 @@ import time
 from fastapi import APIRouter
 
 import app.llm as llm
-from app.features import extract_features
+from app.ml.features import extract_features
 from app.prompts.predict_priority import PREDICT_PRIORITY_PROMPT
 from app.schemas import (
     PredictPriorityResponse,
