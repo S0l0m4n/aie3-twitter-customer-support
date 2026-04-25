@@ -8,3 +8,5 @@ data/notes.md
 data/SESSION_PROMPT.md
 data/twcs.csv
 scripts/test_results.json
+frontend/node_modules/
+frontend/dist/
