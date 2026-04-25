@@ -26,13 +26,20 @@ Install Python virtual environment:
 uv sync
 source .venv/bin/activate
 ```
+(To end the session, run `deactivate` or just kill the terminal.)
 
 To run the FastAPI server:
 ```
 uv run uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-To end the session, run `deactivate` or just kill the terminal.
+To run the frontend:
+```
+cd frontend
+npm install
+npm run dev
+```
+The server will be on the localhost at port **5174** by default.
 
 Project structure
 -----------------
