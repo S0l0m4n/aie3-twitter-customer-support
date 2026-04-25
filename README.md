@@ -46,49 +46,31 @@ Project structure
 ```
 [PROJECT_ROOT]
 ├── README.md
-├── .gitignore
-├── .env.example
-├── docker-compose.yml
-├── Dockerfile                       ← backend Dockerfile (at root)
-├── requirements.txt
-├── main.py                          ← FastAPI app entry point
-├── features.py                      ← shared feature extraction
-├── notebook.ipynb
-│
-├── app/
-│   ├── routers/
-│   │   ├── query.py                 ← POST /query (orchestrator)
-│   │   ├── retrieve.py              ← POST /retrieve
-│   │   ├── generate.py              ← POST /generate/rag, /generate/no-rag
-│   │   ├── predict.py               ← POST /predict/ml, /predict/llm
-│   │   └── health.py                ← GET /health
-│   ├── services/
-│   │   ├── retrieval.py             ← ChromaDB query logic
-│   │   ├── llm.py                   ← Groq API calls
-│   │   ├── ml_model.py              ← Load model.pkl, run predict
-│   │   └── features.py              ← copied from root features.py
-│   ├── schemas/
-│   │   └── models.py                ← Pydantic request/response schemas
-│   └── utils/
-│       └── logger.py                ← JSONL query logging
-│
-├── ml/
-│   └── model.pkl                    ← trained classifier
-│
-├── chroma_data/                     ← ChromaDB persistent dir (volume-mounted)
-│
-├── frontend/
-│   ├── Dockerfile
-│   ├── package.json
-│   └── src/
-│       ├── App.jsx
-│       └── components/
-│           ├── QueryInput.jsx
-│           ├── AnswerPanel.jsx
-│           ├── SourcePanel.jsx
-│           └── ComparisonTable.jsx
-│
-└── logs/
+├── main.py                                 - FastAPI entry point, registers routers
+│── app/
+│   ├── config.py                           - app configuration variables
+│   ├── llm.py                              - LLM clients
+│   ├── ml
+│   │   ├── features.py                     - labelling function, extract features
+│   │   ├── model.py                        - loads ML model
+│   │   └── priority_classifier.joblib      - trained ML model file
+│   ├── prompts
+│   │   ├── generate.py                     - system prompts for response generation
+│   │   └── predict_priority.py             - zero-shot prompt for LLM prediction
+│   ├── rag
+│   │   └── retrieve.py                     - get RAG embeddings from database
+│   ├── schemas.py
+│   └── routers
+│       ├── generate.py                     - POST /generate/rag and /generate/no-rag
+│       ├── health.py                       - GET /health system check
+│       ├── predict_priority.py             - POST /predict/ml and /predict/llm
+│       ├── query.py                        - POST /query combined request
+│       └── retrieve.py                     - POST /retrieve get RAG sources
+├── chroma_data                             - ChromaDB vector store
+├── data                                    - miscellaneous data files, specs
+├── frontend                                - UI code (React)
+├── scripts                                 - handy scripts for data processing
+└── w3_twitter_data.ipynb                   - notebook file
 ```
 
 Data
