@@ -4,7 +4,7 @@ export function SourcePanel({ sources }) {
       <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wide">
         Retrieved sources ({sources.length})
       </h2>
-      <div className="space-y-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {sources.map((src, i) => (
           <SourceCard key={src.ticket_id ?? i} source={src} rank={i + 1} />
         ))}
@@ -17,29 +17,27 @@ function SourceCard({ source, rank }) {
   const pct = Math.round(source.similarity * 100);
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-3">
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-3">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold text-slate-500 mono">#{rank} · {source.ticket_id}</span>
+        <span className="text-sm font-semibold text-slate-500 mono">#{rank} · {source.ticket_id}</span>
         <SimilarityBadge similarity={source.similarity} />
       </div>
 
-      <div>
-        <div className="w-full bg-slate-100 rounded-full h-1.5 mb-3">
-          <div
-            className="bar-fill h-1.5 rounded-full bg-brand-500"
-            style={{ width: `${pct}%` }}
-          />
-        </div>
+      <div className="w-full bg-slate-100 rounded-full h-2">
+        <div
+          className="bar-fill h-2 rounded-full bg-brand-500"
+          style={{ width: `${pct}%` }}
+        />
       </div>
 
       <div className="space-y-2">
         <div>
-          <span className="text-xs font-medium text-slate-400 uppercase tracking-wide">Customer</span>
-          <p className="text-xs text-slate-700 mt-0.5 leading-relaxed">{source.customer_text}</p>
+          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Customer</span>
+          <p className="text-sm text-slate-700 mt-1 leading-relaxed">{source.customer_text}</p>
         </div>
         <div>
-          <span className="text-xs font-medium text-slate-400 uppercase tracking-wide">Brand reply</span>
-          <p className="text-xs text-slate-500 mt-0.5 leading-relaxed italic">{source.brand_reply}</p>
+          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Brand reply</span>
+          <p className="text-sm text-slate-500 mt-1 leading-relaxed italic">{source.brand_reply}</p>
         </div>
       </div>
     </div>
@@ -53,7 +51,7 @@ function SimilarityBadge({ similarity }) {
   else if (pct >= 70) color = 'bg-amber-100 text-amber-700';
 
   return (
-    <span className={`text-xs font-bold mono px-2 py-0.5 rounded ${color}`}>
+    <span className={`text-sm font-bold mono px-3 py-1 rounded-md ${color}`}>
       {pct}% match
     </span>
   );

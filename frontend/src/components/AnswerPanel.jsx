@@ -37,18 +37,24 @@ function AnswerCard({ tone, badge, title, subtitle, text, latency, cost }) {
 
   return (
     <div className={`bg-white rounded-xl shadow-sm border ${c.border} p-6 flex flex-col gap-3`}>
-      <div className="flex items-center gap-2">
-        <span className={`text-xs font-bold px-2 py-0.5 rounded ${c.badge} mono`}>{badge}</span>
+      <div className="flex items-center gap-3">
+        <span className={`text-sm font-bold px-3 py-1 rounded-md ${c.badge} mono`}>{badge}</span>
         <div>
-          <div className="font-semibold text-slate-900 text-sm">{title}</div>
-          <div className="text-xs text-slate-400">{subtitle}</div>
+          <div className="font-semibold text-slate-900">{title}</div>
+          <div className="text-sm text-slate-400">{subtitle}</div>
         </div>
       </div>
       <p className="text-sm text-slate-700 leading-relaxed flex-1">{text}</p>
-      <div className="flex gap-4 text-xs text-slate-400 mono border-t border-slate-100 pt-2">
-        <span>{latency} ms</span>
-        <span>${cost.toFixed(4)}</span>
+      <div className="flex items-center justify-between text-sm text-slate-400 mono border-t border-slate-100 pt-3">
+        <span>{formatLatency(latency)}</span>
+        <span>${cost.toFixed(2)}</span>
       </div>
     </div>
   );
+}
+
+function formatLatency(ms) {
+  if (ms < 1) return `${ms.toFixed(2)} ms`;
+  if (ms < 1000) return `${Math.round(ms)} ms`;
+  return `${(ms / 1000).toFixed(1)} s`;
 }

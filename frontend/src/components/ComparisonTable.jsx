@@ -71,7 +71,7 @@ export function ComparisonTable({ ragAnswer, noRagAnswer, mlPrediction, llmPredi
               <td className="px-4 py-3 text-xs font-medium text-slate-500">Cost</td>
               {cols.map((c) => (
                 <td key={c.key} className="px-4 py-3 mono text-slate-700">
-                  {c.cost === 0 ? <span className="text-emerald-600">$0.00</span> : `$${c.cost.toFixed(4)}`}
+                  {c.cost === 0 ? <span className="text-emerald-600">$0.00</span> : `$${c.cost.toFixed(2)}`}
                 </td>
               ))}
             </tr>
@@ -96,10 +96,10 @@ export function ComparisonTable({ ragAnswer, noRagAnswer, mlPrediction, llmPredi
           </tbody>
         </table>
       </div>
-      <p className="text-xs text-slate-400">
-        ML confidence: calibrated <code className="mono">predict_proba</code>.
-        LLM confidence: self-reported — not statistically calibrated.
-      </p>
+      <div className="text-xs text-slate-400 space-y-1">
+        <p>ML confidence: calibrated via <code className="mono">predict_proba</code></p>
+        <p>LLM confidence: self-reported, not statistically calibrated</p>
+      </div>
     </div>
   );
 }

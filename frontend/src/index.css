@@ -33,3 +33,14 @@ body {
 .pulse-soft {
   animation: pulse-soft 1.5s ease-in-out infinite;
 }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.spinner {
+  display: inline-block;
+  border-radius: 50%;
+  border-style: solid;
+  border-top-color: transparent !important;
+  animation: spin 0.7s linear infinite;
+}

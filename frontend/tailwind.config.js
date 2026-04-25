@@ -12,6 +12,9 @@ export default {
           700: '#2d42b5',
         },
       },
+      borderWidth: {
+        3: '3px',
+      },
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],

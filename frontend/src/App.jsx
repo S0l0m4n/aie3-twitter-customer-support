@@ -6,6 +6,7 @@ import { ComparisonTable } from './components/ComparisonTable.jsx';
 
 export default function App() {
   const [query, setQuery] = useState('');
+  const [topK, setTopK] = useState(3);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState(null);
@@ -20,7 +21,7 @@ export default function App() {
       const res = await fetch('/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text, top_k: topK }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
@@ -32,18 +33,15 @@ export default function App() {
     }
   }
 
-  const urgentByML = result?.ml_prediction?.label === 'urgent';
-  const urgentByLLM = result?.llm_prediction?.label === 'urgent';
-
   return (
     <div className="min-h-screen">
       <header className="bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white font-bold text-lg">
-            CS
+          <div className="w-10 h-10 rounded-xl border-3 border-brand-600 flex items-center justify-center text-xl">
+            🎧
           </div>
           <div>
-            <h1 className="text-lg font-bold text-slate-900">Twitter Customer Support — RAG Playground</h1>
+            <h1 className="text-lg font-bold text-slate-900">Twitter Customer Support</h1>
             <p className="text-xs text-slate-500">RAG vs no-RAG answers · ML vs LLM priority prediction</p>
           </div>
         </div>
@@ -55,6 +53,8 @@ export default function App() {
           onChange={setQuery}
           onSubmit={submit}
           loading={loading}
+          topK={topK}
+          onTopKChange={setTopK}
         />
 
         {error && (
@@ -72,17 +72,12 @@ export default function App() {
               llmConf={result.llm_prediction.confidence}
             />
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2">
-                <AnswerPanel
-                  ragAnswer={result.rag_answer}
-                  noRagAnswer={result.no_rag_answer}
-                />
-              </div>
-              <div className="lg:col-span-1">
-                <SourcePanel sources={result.sources} />
-              </div>
-            </div>
+            <AnswerPanel
+              ragAnswer={result.rag_answer}
+              noRagAnswer={result.no_rag_answer}
+            />
+
+            <SourcePanel sources={result.sources} />
 
             <ComparisonTable
               ragAnswer={result.rag_answer}
@@ -95,7 +90,7 @@ export default function App() {
       </main>
 
       <footer className="max-w-7xl mx-auto px-6 py-8 text-center text-xs text-slate-500">
-        Twitter Customer Support RAG Playground ·{' '}
+        Twitter Customer Support ·{' '}
         <a className="underline hover:text-slate-700" href="/docs" target="_blank" rel="noreferrer">
           API docs
         </a>
@@ -106,9 +101,7 @@ export default function App() {
 
 function PrioritySummary({ mlLabel, mlConf, llmLabel, llmConf }) {
   const isUrgent = mlLabel === 'urgent' || llmLabel === 'urgent';
-  const bg = isUrgent
-    ? 'bg-red-50 border-red-200'
-    : 'bg-emerald-50 border-emerald-200';
+  const bg = isUrgent ? 'bg-red-50 border-red-200' : 'bg-emerald-50 border-emerald-200';
   const title = isUrgent ? '⚠ Flagged as urgent' : '✓ Classified as normal';
   const titleColor = isUrgent ? 'text-red-800' : 'text-emerald-800';
 
@@ -116,18 +109,8 @@ function PrioritySummary({ mlLabel, mlConf, llmLabel, llmConf }) {
     <div className={`rounded-xl border p-4 ${bg}`}>
       <div className={`font-semibold mb-3 ${titleColor}`}>{title}</div>
       <div className="flex flex-wrap gap-4">
-        <PredictionChip
-          source="ML Model"
-          label={mlLabel}
-          conf={mlConf}
-          note="calibrated"
-        />
-        <PredictionChip
-          source="LLM"
-          label={llmLabel}
-          conf={llmConf}
-          note="self-reported"
-        />
+        <PredictionChip source="ML Model" label={mlLabel} conf={mlConf} note="calibrated" />
+        <PredictionChip source="LLM" label={llmLabel} conf={llmConf} note="self-reported" />
       </div>
     </div>
   );
