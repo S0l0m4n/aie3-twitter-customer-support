@@ -1,0 +1,13 @@
+.venv/
+chroma_data/
+chroma_data_st/
+data/
+docs/
+scripts/
+frontend/
+__pycache__/
+*.pyc
+*.ipynb
+logs/
+.env
+.git/
