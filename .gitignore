@@ -4,8 +4,8 @@ __pycache__
 chroma_data*
 data/*.jsonl
 data/*.zip
-data/notes.md
-data/SESSION_PROMPT.md
+docs/notes.md
+docs/SESSION_PROMPT.md
 data/twcs.csv
 scripts/test_results.json
 frontend/node_modules/
